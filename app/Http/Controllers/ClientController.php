@@ -14,8 +14,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //grazie al model effettuo la query
-        $data = Client::all(); //prende tutti i campi
+        // grazie al model effettuo la query
+        $data = Client::all();   // prende tutti i campi
         return view('index', compact('data'));
     }
 
@@ -46,7 +46,10 @@ class ClientController extends Controller
         $clientNew->cognome = $data['lastname'];
         $clientNew->eta = $data['eta'];
         $saved = $clientNew->save();
-        dd($saved);
+        if($saved){
+          return redirect()->route('clients.index');
+        }
+        // dd($saved);
     }
 
     /**
@@ -55,10 +58,19 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+
+     public function show(Client $client)
+     {
+         return view('show', compact('client'));
+     }
+
+     // Oppure possiamo usare questa funzione show
+
+    // public function show($id)
+    // {
+    //     $client = Client::find($id);
+    //     return view('show', compact('client'));
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -66,10 +78,15 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Client $client)
     {
-        //
+        return view('create', compact('client'));
     }
+
+    // public function edit($id)
+    // {
+    //     //
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -78,10 +95,18 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Client $client)
     {
-        //
+        $data = $request->all();
+        // inserire validate
+        $client->update($data);
+        return view('show', compact('client'));
     }
+
+    // public function update(Request $request, $id)
+    // {
+    //     //
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -89,8 +114,14 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Client $client)
     {
-        //
+        $client->delete();
+        return redirect()->route('clients.index');
     }
+
+    // public function destroy($id)
+    // {
+    //     //
+    // }
 }
